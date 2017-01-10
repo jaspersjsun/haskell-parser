@@ -2,7 +2,7 @@ name:                haskell-parser
 version:             0.1.0.0
 synopsis:            Initial project template from stack
 description:         Please see README.md
-homepage:            https://github.com/FakeKiller/haskell-parser#readme
+homepage:            https://github.com/FakeCola/haskell-parser#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Shijie Sun
@@ -16,11 +16,23 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Lib
+                     , Boolean
+                     , Evaluate
+                     , Parse
   build-depends:       base >= 4.7 && < 5
-                       ,text
-                       ,attoparsec
+                     , text
+                     , attoparsec
+  default-language:    Haskell2010
+
+executable haskell-parser
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  build-depends:       base
+                     , text
+                     , attoparsec
+                     , haskell-parser
   default-language:    Haskell2010
 
 source-repository head
   type:     git
-  location: https://github.com/FakeKiller/haskell-parser
+  location: https://github.com/FakeCola/haskell-parser

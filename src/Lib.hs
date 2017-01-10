@@ -2,55 +2,52 @@
 
 module Lib where
 
-import Control.Applicative
-import Data.Attoparsec.Text
-import Data.Functor
-import Data.Text
+-- data type for expression
 
 data Expr
+
+    -- Constructors for "Boolean expression"
+
     = FalseLit
     | TrueLit
     | Not Expr
     | And Expr Expr
     | Or Expr Expr
-    deriving Show
     
-exprParser :: Parser Expr
-exprParser = falseParser <|> trueParser <|> notParser <|> andParser <|> orParser
+    -- Constructors for "Floating-point expression"
+    
+    | NumLit Double
+    | Add Expr Expr
+    | Minus Expr Expr
+    | Mult Expr Expr
+    | Div Expr Expr
+    
+    -- Constructors for "Floating-point comparison"
+    
+    | Eq Expr Expr
+    | Less Expr Expr
+    | LessEq Expr Expr
+    | Greater Expr Expr
+    | GreaterEq Expr Expr
+    
+    -- Constructors for "Lists & Strings"
+    -- We don't have "StringLit" here, because string literals are translated to lists of char literals
+    
+    | CharLit Char
+    | Nil
+    | Cons Expr Expr
+    | Car Expr
+    | Cdr Expr
 
-falseParser :: Parser Expr
-falseParser = lexeme $ string "False" $> FalseLit
+    deriving Show
 
-trueParser :: Parser Expr
-trueParser = lexeme $ string "True" $> TrueLit
+-- data type for evaluation result
 
-notParser :: Parser Expr
-notParser = do
-    lexeme $ char '('
-    lexeme $ string "not"
-    expr <- exprParser
-    lexeme $ char ')'
-    return (Not expr)
+data Result
 
-andParser :: Parser Expr
-andParser = do
-    lexeme $ char '('
-    expr1 <- exprParser
-    lexeme $ string "&&"
-    expr2 <- exprParser
-    lexeme $ char ')'
-    return (And expr1 expr2)
-
-orParser :: Parser Expr
-orParser = do
-    lexeme $ char '('
-    expr1 <- exprParser
-    lexeme $ string "||"
-    expr2 <- exprParser
-    lexeme $ char ')'
-    return (Or expr1 expr2)
-
-lexeme :: Parser a -> Parser a
-lexeme p = do
-    skipSpace
-    p
+    = BoolResult Bool
+    | NumResult Double
+    | NilResult
+    | ConsResult Result Result
+    
+    deriving Show
