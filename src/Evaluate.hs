@@ -4,12 +4,9 @@
 
 module Evaluate where
 
-import Control.Applicative
-import Data.Attoparsec.Text
-import Data.Functor
-import Lib
+import Lib (Expr(..), Val(..))
 
-eval :: Expr -> Lib.Val
+eval :: Expr -> Val
 
 -- | eval bool expression
 eval FalseLit  = BoolVal False
@@ -39,14 +36,14 @@ eval (Cons p q)       = ConsVal (eval p) (eval q)
 eval (Car (Cons p q)) = eval p
 eval (Cdr (Cons p q)) = eval q
 
-fromBoolResult :: Lib.Val -> Bool
+fromBoolResult :: Val -> Bool
 fromBoolResult (BoolVal b) = b
 fromBoolResult _ = errorWithoutStackTrace "Evaluate.fromBoolResult: Not BoolResult"
 
 evalBool :: Expr -> Bool
 evalBool = fromBoolResult . eval
 
-fromNumResult :: Lib.Val -> Double
+fromNumResult :: Val -> Double
 fromNumResult (NumVal b) = b
 fromNumResult _ = errorWithoutStackTrace "Evaluate.fromNumResult: Not NumResult"
 

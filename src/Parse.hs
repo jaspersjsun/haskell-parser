@@ -4,10 +4,10 @@
 
 module Parse where
 
-import Control.Applicative
-import Data.Attoparsec.Text
-import Data.Functor
-import Lib
+import Control.Applicative ((<|>))
+import Data.Attoparsec.Text (Parser, skipSpace, char, double, string, anyChar)
+import Data.Functor (($>))
+import Lib (Expr(..))
 
 exprParser :: Parser Expr
 exprParser = boolParser <|> numParser <|> cmpParser <|> listParser <|> stringParser
