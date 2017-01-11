@@ -43,11 +43,11 @@ data Expr
 
 -- data type for evaluation result
 
-data Result
+data Val
 
-    = BoolResult Bool
-    | NumResult Double
-    | NilResult
-    | ConsResult Result Result
+    = BoolVal Bool
+    | NumVal Double
+    | NilVal
+    | ConsVal Val Val
     
     deriving Show
