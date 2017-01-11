@@ -10,7 +10,7 @@ import Data.Functor
 import Lib
 
 exprParser :: Parser Expr
-exprParser = boolParser <|> numParser <|> cmpParser <|> listParser
+exprParser = boolParser <|> numParser <|> cmpParser <|> listParser <|> stringParser
 
 -- | parse bool expression
 
@@ -179,6 +179,32 @@ cdrParser = do
     lexeme $ char ')'
     return (Cdr expr)
 
+-- | parse string and char
+
+stringParser :: Parser Expr
+stringParser = charLiteralParser <|> strLiteralParser
+
+charLiteralParser :: Parser Expr
+charLiteralParser = do
+    lexeme $ char '\''
+    c <- anyChar
+    char '\''
+    return (CharLit c)
+
+strParser :: Parser Expr
+strParser = do
+    c <- anyChar
+    if c /= '\"'
+        then do
+            cs <- strParser
+            return (Cons (CharLit c) cs)
+        else return Nil
+
+strLiteralParser :: Parser Expr
+strLiteralParser = do
+    lexeme $ char '\"'
+    xs <- strParser
+    return xs
 
 lexeme :: Parser a -> Parser a
 lexeme p = do

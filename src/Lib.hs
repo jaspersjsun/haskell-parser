@@ -47,6 +47,7 @@ data Val
 
     = BoolVal Bool
     | NumVal Double
+    | CharVal Char
     | NilVal
     | ConsVal Val Val
     

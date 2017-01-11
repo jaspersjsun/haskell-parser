@@ -32,6 +32,12 @@ eval (LessEq p q)    = BoolVal $ evalNum p <= evalNum q
 eval (Greater p q)   = BoolVal $ evalNum p > evalNum q
 eval (GreaterEq p q) = BoolVal $ evalNum p >= evalNum q
 
+-- | eval list and char
+eval Nil              = NilVal
+eval (CharLit c)      = CharVal c
+eval (Cons p q)       = ConsVal (eval p) (eval q)
+eval (Car (Cons p q)) = eval p
+eval (Cdr (Cons p q)) = eval q
 
 fromBoolResult :: Lib.Val -> Bool
 fromBoolResult (BoolVal b) = b
