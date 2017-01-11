@@ -10,7 +10,9 @@ import Data.Functor
 import Lib
 
 exprParser :: Parser Expr
-exprParser = boolParser
+exprParser = boolParser <|> numParser <|> cmpParser
+
+-- | parse a bool expression
 
 boolParser :: Parser Expr
 boolParser = falseParser <|> trueParser <|> notParser <|> andParser <|> orParser
@@ -46,6 +48,103 @@ orParser = do
     expr2 <- exprParser
     lexeme $ char ')'
     return (Or expr1 expr2)
+
+-- | parse a floating-point expression
+
+numParser :: Parser Expr
+numParser = doubleParser <|> addParser <|> minusParser <|> multParser <|> divParser
+
+doubleParser :: Parser Expr
+doubleParser = do
+    skipSpace
+    x <- double
+    return (NumLit x)
+
+addParser :: Parser Expr
+addParser = do
+    lexeme $ char '('
+    lexeme $ char '+'
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Add expr1 expr2)
+
+minusParser :: Parser Expr
+minusParser = do
+    lexeme $ char '('
+    lexeme $ char '-'
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Minus expr1 expr2)
+
+multParser :: Parser Expr
+multParser = do
+    lexeme $ char '('
+    lexeme $ char '*'
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Mult expr1 expr2)
+
+divParser :: Parser Expr
+divParser = do
+    lexeme $ char '('
+    lexeme $ char '/'
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Div expr1 expr2)
+
+-- | parse a floating-point comparison
+
+cmpParser :: Parser Expr
+cmpParser = eqParser <|> lessParser <|> lessEqParser <|> greaterParser <|> greaterEqParser
+
+eqParser :: Parser Expr
+eqParser = do
+    lexeme $ char '('
+    lexeme $ char '='
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Eq expr1 expr2)
+
+lessParser :: Parser Expr
+lessParser = do
+    lexeme $ char '('
+    lexeme $ char '<'
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Less expr1 expr2)
+
+lessEqParser :: Parser Expr
+lessEqParser = do
+    lexeme $ char '('
+    lexeme $ string "<="
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (LessEq expr1 expr2)
+
+greaterParser :: Parser Expr
+greaterParser = do
+    lexeme $ char '('
+    lexeme $ char '>'
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Greater expr1 expr2)
+
+greaterEqParser :: Parser Expr
+greaterEqParser = do
+    lexeme $ char '('
+    lexeme $ string ">="
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (GreaterEq expr1 expr2)
 
 lexeme :: Parser a -> Parser a
 lexeme p = do
