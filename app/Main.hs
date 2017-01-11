@@ -3,7 +3,7 @@
 module Main where
 
 import Data.Attoparsec.Text (parseOnly)
-import Parse (exprParser)
+import ExprParser (exprParser)
 import Evaluate (evalWithErrorThrowing)
 
 main :: IO ()

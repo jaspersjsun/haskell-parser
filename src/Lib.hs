@@ -71,6 +71,8 @@ data Stmt
     -- Skip out one level of "while" loop. It's an error if currently we are not in a loop
     | Skip
 
+    deriving Show
+
 
 
 -- A program is a single statement

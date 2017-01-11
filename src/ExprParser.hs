@@ -2,7 +2,7 @@
 
 -- combine the 'exprParse' functions into one module
 
-module Parse where
+module ExprParser where
 
 import Control.Applicative ((<|>))
 import Data.Attoparsec.Text (Parser, skipSpace, char, double, string, anyChar)
