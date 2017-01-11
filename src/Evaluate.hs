@@ -8,7 +8,6 @@ import Control.Applicative
 import Data.Attoparsec.Text
 import Data.Functor
 import Lib
-import Boolean ( fromBoolResult )
 
 eval :: Expr -> Lib.Result
 eval FalseLit = BoolResult False
@@ -16,6 +15,10 @@ eval TrueLit = BoolResult True
 eval (Not p) = BoolResult $ not $ evalBool p
 eval (And p q) = BoolResult $ evalBool p && evalBool q
 eval (Or p q) = BoolResult $ evalBool p || evalBool q
+
+fromBoolResult :: Lib.Result -> Bool
+fromBoolResult (BoolResult b) = b
+fromBoolResult _ = errorWithoutStackTrace "Evaluate.fromBoolResult: Not BoolResult"
 
 evalBool :: Expr -> Bool
 evalBool = fromBoolResult . eval
