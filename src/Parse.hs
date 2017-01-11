@@ -10,9 +10,9 @@ import Data.Functor
 import Lib
 
 exprParser :: Parser Expr
-exprParser = boolParser <|> numParser <|> cmpParser
+exprParser = boolParser <|> numParser <|> cmpParser <|> listParser
 
--- | parse a bool expression
+-- | parse bool expression
 
 boolParser :: Parser Expr
 boolParser = falseParser <|> trueParser <|> notParser <|> andParser <|> orParser
@@ -49,7 +49,7 @@ orParser = do
     lexeme $ char ')'
     return (Or expr1 expr2)
 
--- | parse a floating-point expression
+-- | parse floating-point expression
 
 numParser :: Parser Expr
 numParser = doubleParser <|> addParser <|> minusParser <|> multParser <|> divParser
@@ -96,7 +96,7 @@ divParser = do
     lexeme $ char ')'
     return (Div expr1 expr2)
 
--- | parse a floating-point comparison
+-- | parse floating-point comparison
 
 cmpParser :: Parser Expr
 cmpParser = eqParser <|> lessParser <|> lessEqParser <|> greaterParser <|> greaterEqParser
@@ -145,6 +145,40 @@ greaterEqParser = do
     expr2 <- exprParser
     lexeme $ char ')'
     return (GreaterEq expr1 expr2)
+
+-- | parse list
+
+listParser :: Parser Expr
+listParser = nilParser <|> consParser <|> carParser <|> cdrParser
+
+nilParser :: Parser Expr
+nilParser = lexeme $ string "nil" $> Nil
+
+consParser :: Parser Expr
+consParser = do
+    lexeme $ char '('
+    lexeme $ string "cons"
+    expr1 <- exprParser
+    expr2 <- exprParser
+    lexeme $ char ')'
+    return (Cons expr1 expr2)
+
+carParser :: Parser Expr
+carParser = do
+    lexeme $ char '('
+    lexeme $ string "car"
+    expr <- exprParser
+    lexeme $ char ')'
+    return (Car expr)
+
+cdrParser :: Parser Expr
+cdrParser = do
+    lexeme $ char '('
+    lexeme $ string "cdr"
+    expr <- exprParser
+    lexeme $ char ')'
+    return (Cdr expr)
+
 
 lexeme :: Parser a -> Parser a
 lexeme p = do
