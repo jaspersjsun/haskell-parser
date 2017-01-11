@@ -14,3 +14,4 @@ main = do
     putStrLn $ show $ evalWithErrorThrowing $ parseOnly exprParser "(not Tr"
     putStrLn $ show $ evalWithErrorThrowing $ parseOnly exprParser "(nXXX True)"
     putStrLn $ show $ evalWithErrorThrowing $ parseOnly exprParser "(not True)   MORE"
+    putStrLn $ show $ evalWithErrorThrowing $ parseOnly exprParser "(not (and True False))   MORE"

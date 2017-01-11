@@ -29,8 +29,8 @@ notParser = do
 andParser :: Parser Expr
 andParser = do
     lexeme $ char '('
-    expr1 <- boolParser
     lexeme $ string "and"
+    expr1 <- boolParser
     expr2 <- boolParser
     lexeme $ char ')'
     return (And expr1 expr2)
@@ -38,8 +38,8 @@ andParser = do
 orParser :: Parser Expr
 orParser = do
     lexeme $ char '('
-    expr1 <- boolParser
     lexeme $ string "or"
+    expr1 <- boolParser
     expr2 <- boolParser
     lexeme $ char ')'
     return (Or expr1 expr2)
