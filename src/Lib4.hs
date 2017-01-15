@@ -2,7 +2,7 @@
 
 module Lib4 where
 import qualified Data.Map as M
-import Parse
+import ExprParser
 import Evaluate
 import Data.Attoparsec.Text
 import System.IO
