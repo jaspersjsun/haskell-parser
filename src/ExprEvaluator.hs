@@ -34,8 +34,8 @@ eval m (GreaterEq p q) = BoolVal $ evalNum m p >= evalNum m q
 eval _ Nil              = NilVal
 eval _ (CharLit c)      = CharVal c
 eval m (Cons p q)       = ConsVal (eval m p) (eval m q)
-eval m (Car (Cons p q)) = eval m p
-eval m (Cdr (Cons p q)) = eval m q
+eval m (Car p) = getCar $ eval m p
+eval m (Cdr p) = getCdr $ eval m p
 
 -- | eval variable
 eval m (VarRef v) = 
@@ -57,3 +57,9 @@ fromNumVal _ = errorWithoutStackTrace "Evaluate.fromNumVal: Not NumVal"
 
 evalNum :: Mem -> Expr -> Double
 evalNum m e = fromNumVal $ eval m e
+
+getCar :: Val -> Val
+getCar (ConsVal vp vq) = vp
+
+getCdr :: Val -> Val
+getCdr (ConsVal vp vq) = vq
