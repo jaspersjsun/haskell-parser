@@ -20,13 +20,15 @@ library
                      , Lib2
                      , Mylib
                      , Evaluate
-                     , Parse
+                     , ExprParser
+                     , StmtParser
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , mtl
                      , ghc
                      , text
                      , attoparsec
+                     , containers
   default-language:    Haskell2010
 
 executable haskell-parser
@@ -36,6 +38,7 @@ executable haskell-parser
                      , text
                      , attoparsec
                      , haskell-parser
+                     , containers
   default-language:    Haskell2010
 
 source-repository head
