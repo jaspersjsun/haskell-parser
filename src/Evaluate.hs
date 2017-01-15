@@ -5,7 +5,6 @@
 module Evaluate where
 
 import Lib (Expr(..), Val(..))
-
 eval :: Expr -> Val
 
 -- | eval bool expression

@@ -17,10 +17,13 @@ library
   hs-source-dirs:      src
   exposed-modules:     Lib
                      , Lib4
+                     , Lib2
+                     , Mylib
                      , Evaluate
                      , Parse
   build-depends:       base >= 4.7 && < 5
                      , containers
+                     , mtl
                      , ghc
                      , text
                      , attoparsec
