@@ -2,7 +2,7 @@
 
 -- combine the 'eval' functions into one module
 
-module Evaluate where
+module ExprEvaluator where
 
 import Lib (Expr(..), Val(..), Mem)
 import qualified Data.Map as Map
@@ -57,7 +57,3 @@ fromNumVal _ = errorWithoutStackTrace "Evaluate.fromNumVal: Not NumVal"
 
 evalNum :: Mem -> Expr -> Double
 evalNum m e = fromNumVal $ eval m e
-
-evalWithErrorThrowing :: Mem -> Either String Expr -> String
-evalWithErrorThrowing _ (Left errStr) = "not a valid bool expr: " ++ errStr
-evalWithErrorThrowing m (Right expr) = show $ eval m expr

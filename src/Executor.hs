@@ -4,18 +4,24 @@ module Executor where
 
 import qualified Data.Map as Map
 import ExprParser
-import Evaluate
+import StmtParser
+import StmtEvaluator
+import ExprEvaluator
 import Data.Attoparsec.Text
 import System.IO
+import Data.Either
 import Data.Text
-import Lib (Expr(..), Val(..), Mem)
+import Lib
 
 type Env = Mem
 
-fromRight::Either a b -> b
+fromRight :: Either a b -> b
 fromRight (Right x) = x
 
-mainLoop :: Either String Expr -> Env -> IO ()
+fromLeft :: Either a b -> a
+fromLeft (Left x) = x
+
+mainLoop :: Either String (Either Stmt Expr) -> Env -> IO ()
 mainLoop exps env = do
     putStr "> "
     hFlush stdout
@@ -27,12 +33,25 @@ mainLoop exps env = do
             defMain_file3 env file
             mainLoop exps env
         [":t"] -> do
-            putStrLn $ show (fromRight exps)
+            putStrLn (if isLeft exps then fromLeft exps else (if isLeft $ fromRight exps then show $ fromLeft $ fromRight exps else show $ fromRight $ fromRight exps))
             mainLoop exps env
         _ -> do
-            let exps = parseOnly exprParser (pack ls)
-            putStrLn $ show $ evalWithErrorThrowing env $ parseOnly exprParser (pack ls)
-            mainLoop exps env
+            let stmtParseResult = parseOnly stmtParser (pack ls)
+            if isLeft stmtParseResult
+                then do
+                    let exprParseResult = parseOnly exprParser (pack ls)
+                    if isLeft exprParseResult
+                        then do
+                            putStrLn $ "not a valid experssion or statemet"
+                            mainLoop exps env
+                        else do
+                            putStrLn $ show $ eval env (fromRight exprParseResult)
+                            let exps' = (Right $ Right $ fromRight exprParseResult)
+                            mainLoop exps env
+                else do
+                    let exps' = (Right $ Left $ fromRight stmtParseResult)
+                    let env' = evalProg (fromRight stmtParseResult) env
+                    mainLoop exps' env'
 
 defMain_file1 :: String -> String -> IO()  --（for -i -o）
 defMain_file1 ins outs = do
@@ -78,8 +97,20 @@ processLine1 inh ouh env =
                        [":q"] -> do
                            hPutStrLn ouh "Bye Bye~"
                        _ -> do
-                           hPutStrLn ouh  (show $ evalWithErrorThrowing env $ parseOnly exprParser (pack lineStr))
-                           processLine1 inh ouh env
+                           let stmtParseResult = parseOnly stmtParser (pack lineStr)
+                           if isLeft stmtParseResult
+                               then do
+                                   let exprParseResult = parseOnly exprParser (pack lineStr)
+                                   if isLeft exprParseResult
+                                       then do
+                                           hPutStrLn ouh "not a valid experssion or statemet"
+                                           processLine1 inh ouh env
+                                       else do
+                                           hPutStrLn ouh $ show $ eval env (fromRight exprParseResult)
+                                           processLine1 inh ouh env
+                               else do
+                                   let env' = evalProg (fromRight stmtParseResult) env
+                                   processLine1 inh ouh env'
 
 processLine2 :: Handle ->  Env -> IO ()
 processLine2 inh env =
@@ -91,8 +122,20 @@ processLine2 inh env =
                        [":q"] -> do
                            putStrLn "Bye Bye~"
                        _ -> do
-                           putStrLn  (show $ evalWithErrorThrowing env $ parseOnly exprParser (pack lineStr))
-                           processLine2 inh env
+                           let stmtParseResult = parseOnly stmtParser (pack lineStr)
+                           if isLeft stmtParseResult
+                               then do
+                                   let exprParseResult = parseOnly exprParser (pack lineStr)
+                                   if isLeft exprParseResult
+                                       then do
+                                           putStrLn "not a valid experssion or statemet"
+                                           processLine2 inh env
+                                       else do
+                                           putStrLn $ show $ eval env (fromRight exprParseResult)
+                                           processLine2 inh env
+                               else do
+                                   let env' = evalProg (fromRight stmtParseResult) env
+                                   processLine2 inh env'
 
 processLine3 :: Handle ->  Env -> IO ()
 processLine3 inh env =
@@ -104,8 +147,20 @@ processLine3 inh env =
                        [":q"] -> do
                            putStrLn "Bye Bye~"
                        _ -> do
-                           putStrLn  (show $  fromRight (parseOnly exprParser (pack lineStr)))
-                           processLine3 inh env
+                           let stmtParseResult = parseOnly stmtParser (pack lineStr)
+                           if isLeft stmtParseResult
+                               then do
+                                   let exprParseResult = parseOnly exprParser (pack lineStr)
+                                   if isLeft exprParseResult
+                                       then do
+                                           putStrLn "not a valid experssion or statemet"
+                                           processLine3 inh env
+                                       else do
+                                           putStrLn $ show (fromRight exprParseResult)
+                                           processLine3 inh env
+                               else do
+                                   putStrLn $ show (fromRight stmtParseResult)
+                                   processLine3 inh env
 
 processLine4 :: Handle -> Handle -> Env -> IO ()
 processLine4 inh ouh env =
@@ -117,11 +172,22 @@ processLine4 inh ouh env =
                        [":q"] -> do
                            hPutStrLn ouh "Bye Bye~"
                        _ -> do
-                           hPutStrLn ouh  (show $ fromRight (parseOnly exprParser (pack lineStr)))
-                           processLine4 inh ouh env
+                           let stmtParseResult = parseOnly stmtParser (pack lineStr)
+                           if isLeft stmtParseResult
+                               then do
+                                   let exprParseResult = parseOnly exprParser (pack lineStr)
+                                   if isLeft exprParseResult
+                                       then do
+                                           hPutStrLn ouh "not a valid experssion or statemet"
+                                           processLine4 inh ouh env
+                                       else do
+                                           hPutStrLn ouh $ show $ fromRight exprParseResult
+                                           processLine4 inh ouh env
+                               else do
+                                   hPutStrLn ouh $ show $ fromRight stmtParseResult
+                                   processLine4 inh ouh env
 
 defMain :: IO ()
 defMain = do
-    -- putStrLn $ show $ evalWithErrorThrowing $ (parseOnly exprParser test)
     Prelude.putStrLn "This is a simple REPL. Be my guest!"
     mainLoop (Left "") (Map.empty)

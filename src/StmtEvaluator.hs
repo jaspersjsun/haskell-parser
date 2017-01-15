@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Evaluator where
+module StmtEvaluator where
 
 import qualified Data.Map as Map
 import Lib
-import Evaluate (evalBool, eval)
+import ExprEvaluator (evalBool, eval)
 
 -- Evaluation function
 -- Given an initial memory, execute program and return the memory afterwards
