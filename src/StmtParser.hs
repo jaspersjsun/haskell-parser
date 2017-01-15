@@ -9,7 +9,7 @@ import Data.Attoparsec.Text (Parser, skipSpace, char, double, string, anyChar, t
 import Data.Functor (($>))
 import Data.Text (unpack)
 import Lib
-import ExprParser (exprParser, lexeme)
+import ExprParser (exprParser, lexeme, varParser)
 import Data.Maybe (isJust, fromJust)
 
 stmtParser :: Parser Stmt
@@ -19,7 +19,8 @@ setParser :: Parser Stmt
 setParser = do
     lexeme $ char '('
     lexeme $ string "set!"
-    var <- varParser
+    varVal <- varParser
+    let var = fromVarVal varVal
     expr <- exprParser
     lexeme $ char ')'
     return (VarSet var expr)
@@ -66,9 +67,5 @@ multiStmtParser = do
         else return []
 
 
-varParser :: Parser Var
-varParser = do
-    skipSpace
-    varText <- takeWhile1 (/= ' ')
-    let var = unpack varText
-    return var
+fromVarVal :: Expr -> Var
+fromVarVal (VarRef var) = var

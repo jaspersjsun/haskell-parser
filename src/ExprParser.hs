@@ -5,12 +5,13 @@
 module ExprParser where
 
 import Control.Applicative ((<|>))
-import Data.Attoparsec.Text (Parser, skipSpace, char, double, string, anyChar)
+import Data.Attoparsec.Text (Parser, skipSpace, char, double, string, anyChar, takeWhile1, letter)
 import Data.Functor (($>))
+import Data.Text (unpack)
 import Lib (Expr(..))
 
 exprParser :: Parser Expr
-exprParser = boolParser <|> numParser <|> cmpParser <|> listParser <|> stringParser
+exprParser = boolParser <|> numParser <|> cmpParser <|> listParser <|> stringParser <|> varParser
 
 -- | parse bool expression
 
@@ -210,3 +211,12 @@ lexeme :: Parser a -> Parser a
 lexeme p = do
     skipSpace
     p
+
+-- | parse variabel
+
+varParser :: Parser Expr
+varParser = do
+    skipSpace
+    var_head <- letter
+    var <- takeWhile1 (\c -> c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c =='_' || c >= '0' && c <= '9')
+    return (VarRef $ var_head : (unpack var))
