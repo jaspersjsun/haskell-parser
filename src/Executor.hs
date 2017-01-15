@@ -33,8 +33,12 @@ mainLoop exps env = do
             defMain_file3 env file
             mainLoop exps env
         [":t"] -> do
-            putStrLn (if isLeft exps then fromLeft exps else (if isLeft $ fromRight exps then show $ fromLeft $ fromRight exps else show $ fromRight $ fromRight exps))
-            mainLoop exps env
+            if isLeft exps
+                then mainLoop exps env
+            else do
+                let toBeShowed = fromRight exps
+                putStrLn (if isLeft toBeShowed then show $ fromLeft toBeShowed else show $ fromRight toBeShowed)
+                mainLoop exps env
         _ -> do
             let stmtParseResult = parseOnly stmtParser (pack ls)
             if isLeft stmtParseResult
