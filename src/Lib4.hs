@@ -33,8 +33,12 @@ mainLoop exps env = do
             defMain_file3 env file
             mainLoop exps env
         [":t"] -> do
-            putStrLn $ show (fromRight exps)
-            mainLoop exps env
+            if (exps /= (Left ""))
+            then do
+                putStrLn $ show (fromRight exps)
+                mainLoop exps env
+            else
+                mainLoop exps env
         _ -> do
             let exps = parseOnly exprParser (pack ls)
             putStrLn $ show $ evalWithErrorThrowing $ parseOnly exprParser (pack ls)
@@ -129,8 +133,12 @@ processLine3 inh env =
                        [":q"] -> do
                            putStrLn "Bye Bye~"
                        _ -> do
-                           putStrLn  (show $  fromRight (parseOnly exprParser (pack lineStr)))
-                           processLine2 inh env
+                           if (parseOnly exprParser (pack lineStr) /= Left "")
+                           then do
+                               putStrLn  (show $  fromRight (parseOnly exprParser (pack lineStr)))
+                               processLine3 inh env
+                           else
+                               processLine3 inh env
 
 processLine4 :: Handle -> Handle -> Env -> IO ()
 processLine4 inh ouh env =
@@ -139,11 +147,13 @@ processLine4 inh ouh env =
            then return ()
            else do lineStr <- hGetLine inh
                    case Prelude.words lineStr of
-                       [":q"] -> do
-                           hPutStrLn ouh "Bye Bye~"
                        _ -> do
-                           hPutStrLn ouh  (show $ fromRight (parseOnly exprParser (pack lineStr)))
-                           processLine1 inh ouh env
+                           if (parseOnly exprParser (pack lineStr) /= (Left ""))
+                           then do
+                               hPutStrLn ouh  (show $ fromRight (parseOnly exprParser (pack lineStr)))
+                               processLine4 inh ouh env
+                           else
+                               processLine4 inh ouh env
 
 defMain :: IO ()
 defMain = do

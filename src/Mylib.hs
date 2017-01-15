@@ -17,6 +17,6 @@ mygetArgs xs
     |length xs == 2 && xs!!0 == "-i" = defMain_file2 (xs!!1)
     |length xs == 2 && xs!!0 == "-t" = defMain_file4 (xs!!1)
     |length xs > 2 && xs!!0 == "-i" && xs!!2 == "-o" = defMain_file1 (xs!!1) (xs!!3)
-    |length xs > 2 && xs!!0 == "-t" && xs!!2 == "-o" = defMain_file1 (xs!!1) (xs!!3)
+    |length xs > 2 && xs!!0 == "-t" && xs!!2 == "-o" = defMain_file5 (xs!!1) (xs!!3)
     |otherwise = do
     	putStrLn $ "arg is wrong!"
