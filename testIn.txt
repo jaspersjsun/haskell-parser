@@ -1,0 +1,15 @@
+nil
+'a'
+"abc"
+(cons 'a' (cons 'b' nil))
+(car (cons 'a' (cons 'b' nil)))
+(cdr (cdr (cons 'a' (cons "bcd" nil))))
+(cons 1 nil)
+(cons True (cons (/ 2.46 2) False))	
+(set! aaa 1.5)
+(set! bbb 3.5)
+(set! ccc -9.0)
+(+ aaa bbb)
+(- ccc aaa)
+(* bbb aaa)
+(/ bbb aaa)
