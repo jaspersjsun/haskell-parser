@@ -35,19 +35,19 @@ eval (Cons p q)       = ConsVal (eval p) (eval q)
 eval (Car (Cons p q)) = eval p
 eval (Cdr (Cons p q)) = eval q
 
-fromBoolResult :: Val -> Bool
-fromBoolResult (BoolVal b) = b
-fromBoolResult _ = errorWithoutStackTrace "Evaluate.fromBoolResult: Not BoolResult"
+fromBoolVal :: Val -> Bool
+fromBoolVal (BoolVal b) = b
+fromBoolVal _ = errorWithoutStackTrace "Evaluate.fromBoolVal: Not BoolResult"
 
 evalBool :: Expr -> Bool
-evalBool = fromBoolResult . eval
+evalBool = fromBoolVal . eval
 
-fromNumResult :: Val -> Double
-fromNumResult (NumVal b) = b
-fromNumResult _ = errorWithoutStackTrace "Evaluate.fromNumResult: Not NumResult"
+fromNumVal :: Val -> Double
+fromNumVal (NumVal b) = b
+fromNumVal _ = errorWithoutStackTrace "Evaluate.fromNumVal: Not NumResult"
 
 evalNum :: Expr -> Double
-evalNum = fromNumResult . eval
+evalNum = fromNumVal . eval
 
 evalWithErrorThrowing :: Either String Expr -> String
 evalWithErrorThrowing (Left errStr) = "not a valid bool expr: " ++ errStr

@@ -40,7 +40,7 @@ data Expr
 
     -- Reference the value of a variable. If the variable doesn't exist, it's an error
     | VarRef Var
-    deriving Show
+    deriving (Eq, Show)
 
 -- data type for evaluation result
 
@@ -50,7 +50,7 @@ data Val
     | CharVal Char
     | NilVal
     | ConsVal Val Val
-    deriving Show
+    deriving (Eq, Show)
 
 -- data type for statement
 
@@ -71,7 +71,7 @@ data Stmt
     -- Skip out one level of "while" loop. It's an error if currently we are not in a loop
     | Skip
 
-    deriving Show
+    deriving (Show, Eq)
 
 
 
@@ -80,8 +80,3 @@ type Prog = Stmt
 
 -- A memory is a mapping from variable names to values
 type Mem = Map.Map Var Val
-
--- -- Evaluation function
--- -- Given an initial memory, execute program and return the memory afterwards
--- eval :: Prog -> Mem -> Mem
--- eval = undefined

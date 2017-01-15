@@ -20,6 +20,7 @@ library
                      , Lib2
                      , Mylib
                      , Evaluate
+                     , Evaluator
                      , ExprParser
                      , StmtParser
   build-depends:       base >= 4.7 && < 5
