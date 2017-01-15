@@ -2,7 +2,7 @@
 
 -- combine the 'exprParse' functions into one module
 
-module StmtParser where
+module StmtParser (stmtParser) where
 
 import Control.Applicative ((<|>))
 import Data.Attoparsec.Text (Parser, skipSpace, char, double, string, anyChar, takeWhile1, peekChar)

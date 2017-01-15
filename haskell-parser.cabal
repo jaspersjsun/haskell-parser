@@ -16,9 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Lib
-                     , Lib4
-                     , Lib2
-                     , Mylib
+                     , Executor
                      , Evaluate
                      , Evaluator
                      , ExprParser
@@ -35,6 +33,7 @@ executable haskell-parser
   hs-source-dirs:      app
   main-is:             Main.hs
   build-depends:       base
+                     , mtl
                      , text
                      , attoparsec
                      , haskell-parser
